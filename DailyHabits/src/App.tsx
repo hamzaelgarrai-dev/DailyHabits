@@ -2,6 +2,7 @@ import Header from "./components/layout/Header"
 import './index.css'
 import Form from "./components/forms/AddRoutineForm"
 import UserList from "./components/users/UserList"
+import Challenge from "./components/challenge"
 function App() {
 
  const userData =  [
@@ -35,6 +36,10 @@ function App() {
   }
 ]
 
+const initialTime = 10000
+
+    const JSONData = JSON.stringify(userData)
+    localStorage.setItem("userDataLS", JSONData);
 
   return (
     <>
@@ -43,11 +48,14 @@ function App() {
 
     <div className="max-w-[1020px] flex flex-col space-y-6 pb-6 justify-center mx-auto">
 
-      <Form/>
+      <Form users = {userData}/>
       <UserList users = {userData}/>
 
 
     </div>
+
+
+    <Challenge initialtime = {initialTime}/>
     
 
     </>
