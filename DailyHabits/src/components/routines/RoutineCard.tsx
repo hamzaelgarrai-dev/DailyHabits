@@ -1,31 +1,37 @@
 import React from 'react'
 import { useState } from 'react'
 
-function RoutineCard({ routine }) {
+function RoutineCard({ routine ,userId ,onDelete,onUpdateDone }) {
 
-  const [done, setDone] = useState(routine.done)
-  const changeDone =()=>{
-
-    setDone(!done )
-  }
+  
   return (
 
     <div className='flex justify-between items-center  bg-white w-72 h-12 rounded-lg p-2'>
 
-      <p>{routine.title}</p>
+       
+
+      <p className={routine.done ? "line-through text-gray-400":"" }>{routine.title}</p>
 
 
       <div className="flex items-center justify-center space-x-2">
 
-        {
-          done ?
+        {!routine.done ? (
+          <button
+            onClick={() => onUpdateDone(userId, routine.id)}
+            className='w-14 h-7 text-sm bg-green-500 rounded-lg'
+          >
+            Done
+          </button>
+        ) : (
+          <button
+            onClick={() => onUpdateDone(userId, routine.id)}
+            className='w-16 h-7 text-sm bg-yellow-300 rounded-lg'
+          >
+            Annuler
+          </button>
+        )}
 
-            (<button onClick={changeDone} className='w-14 h-7 text-sm bg-green-500 rounded-lg '>Done</button>) :
-            (<button onClick={changeDone} className='w-16 h-7 text-sm bg-yellow-300 rounded-lg' >Annuler</button>)
-
-        }
-
-        <button className='w-20 h-7 text-sm bg-red-500 rounded-lg'>Supprimer</button>
+        <button  onClick={() => onDelete(userId, routine.id)} className='w-20 h-7 text-sm bg-red-500 rounded-lg'>Supprimer</button>
       </div>
 
 

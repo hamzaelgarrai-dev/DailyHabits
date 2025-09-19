@@ -2,7 +2,9 @@ import Header from "./components/layout/Header"
 import './index.css'
 import Form from "./components/forms/AddRoutineForm"
 import UserList from "./components/users/UserList"
-import Challenge from "./components/challenge"
+import { useEffect, useState } from "react"
+
+
 function App() {
 
  const userData =  [
@@ -36,26 +38,77 @@ function App() {
   }
 ]
 
-const initialTime = 10000
 
-    const JSONData = JSON.stringify(userData)
-    localStorage.setItem("userDataLS", JSONData);
+
+const [users, setUsers] = useState([])
+ 
+  useEffect(() => {
+    const savedData = localStorage.getItem("userDataLS")
+
+    if (!savedData) {
+      localStorage.setItem("userDataLS", JSON.stringify(userData))
+      setUsers(userData)
+    } else {
+      setUsers(JSON.parse(savedData))
+      
+    }
+  }, [])
+
+
+  
+
+  const handleDeleteRoutine = (userId, routineId) => {
+    const updatedUsers = users.map(user => {
+      if (user.id === userId) {
+        return {
+          ...user,
+          routines: user.routines.filter(r => r.id !== routineId)
+        };
+      }
+      return user;
+    });
+    setUsers(updatedUsers);
+    localStorage.setItem("userDataLS", JSON.stringify(updatedUsers));
+  };
+
+  const handleDoneStatus = (userId, routineId) => {
+  const updatedUsers = users.map(user => {
+    if (user.id === userId) {
+      return {
+        ...user,
+        routines: user.routines.map(routine =>
+          routine.id === routineId
+            ? { ...routine, done: !routine.done } 
+            : routine
+        ),
+      };
+    }
+    return user;
+  });
+
+  setUsers(updatedUsers);
+  localStorage.setItem("userDataLS", JSON.stringify(updatedUsers));
+};
+
+  
+
+
 
   return (
     <>
 
     <Header/>
 
-    <div className="max-w-[1020px] flex flex-col space-y-6 pb-6 justify-center mx-auto">
+    <div className="max-w-[1020px] min-h-screen flex flex-col space-y-6 pb-6 justify-center mx-auto">
 
-      <Form users = {userData}/>
-      <UserList users = {userData}/>
-
+      <Form users = {users} setUsers={setUsers}/>
+      <UserList users = {users} onDeleteRoutine={handleDeleteRoutine} onUpdateDone={handleDoneStatus} />
+     
 
     </div>
 
 
-    <Challenge initialtime = {initialTime}/>
+   
     
 
     </>
